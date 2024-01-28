@@ -1,17 +1,26 @@
-# Utiliser l'image Python officielle
-FROM python:3.9
+# Image Python 3.8 sur Alpine
+FROM python:3.8-alpine
 
-# Définir le répertoire de travail
+# Copie des fichiers nécessaire dans le répertoire de travail
+COPY ./requirements.txt /app/requirements.txt
+
+# Repertoire de travail
 WORKDIR /app
 
-# Copier le contenu actuel dans le conteneur
-COPY . /app
+# Création et activation d'un environnement virtuel
+RUN python -m venv venv
 
-# Installer les dépendances
-RUN pip install --no-cache-dir -r requirements.txt
+# Installation des dépendances
+RUN pip install -r requirements.txt
 
-# Exposer le port sur lequel Flask écoute
-EXPOSE 5000
+# Copie le contenu du repertoire actuel dans /app du conteneur
+COPY ./app /app
 
-# Commande pour démarrer l'application Flask
-CMD ["python", "api.py"]
+# Expose port 5000 for Flask to listen on
+EXPOSE 5050
+
+# Define environment variable for Flask
+ENV FLASK_APP=app.py
+
+# Démarrez l'application Flash
+CMD ["python", "app.py"]
